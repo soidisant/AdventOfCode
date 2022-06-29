@@ -5,8 +5,21 @@ import java.io.File
 class Bag(val bagColor: String, val bagContentString: String) {
 
     companion object {
-        val bagRules = mutableListOf<Bag>()
         val contentRegex = "(?<number>\\d+) (?<color>.*) bags?".toRegex()
+        val bagRegex = "(?<color>.*) bags contain (?<content>.*).".toRegex()
+
+        val bagRules: MutableList<Bag> by lazy {
+            mutableListOf<Bag>().also { list ->
+                val file = File(ClassLoader.getSystemResource("day7input.txt").file)
+                file.forEachLine { line ->
+                    bagRegex.find(line)?.let {
+                        val color = it.groups["color"]!!.value
+                        val content = it.groups["content"]!!.value
+                        list.add(Bag(color, content))
+                    }
+                }
+            }
+        }
     }
 
     val bagContent: MutableList<Pair<Bag, Int>> by lazy {
@@ -45,59 +58,41 @@ class Bag(val bagColor: String, val bagContentString: String) {
         }
         total
     }
-}
 
-fun parseRules() {
-    val regex = "(?<color>.*) bags contain (?<content>.*).".toRegex()
-    val file = File(ClassLoader.getSystemResource("day7input.txt").file)
-    file.forEachLine { line ->
-        regex.find(line)?.let {
-            val color = it.groups["color"]!!.value
-            val content = it.groups["content"]!!.value
-//           println("$color | $content")
-            Bag.bagRules.add(Bag(color, content))
-        }
-    }
-}
-
-fun ruleCanContain(quantity: Int, bagColor: String, bag: Bag): String? {
-//    println("ruleCanContain $quantity $bagColor ${rule.bagColor}")
-    bag.bagContent.forEach { enclosedBag ->
-        if (enclosedBag.first.bagColor == bagColor && enclosedBag.second >= quantity) {
-            return bag.bagColor
-        } else {
-            ruleCanContain(quantity, bagColor, enclosedBag.first)?.let {
-                return bag.bagColor
+    fun canBagContain(quantity: Int, color: String): String? {
+        bagContent.forEach { enclosedBag ->
+            if (enclosedBag.first.bagColor == color && enclosedBag.second >= quantity) {
+                return this.bagColor
+            } else {
+                enclosedBag.first.canBagContain(quantity, color)?.let {
+                    return bagColor
+                }
             }
         }
+        return null
     }
-    return null
 }
 
 fun part1(quantity: Int, bagColor: String) {
-    var directContent = mutableListOf<String>()
+    val directContent = mutableListOf<String>()
     Bag.bagRules.forEach {
-        ruleCanContain(quantity, bagColor, it)?.let {
+        it.canBagContain(quantity, bagColor)?.let {
             directContent.add(it)
         }
     }
 
     println("$directContent")
-    println(directContent.size)
-    println("${directContent.distinct().size} bags can contain $quantity $bagColor bags")
+    println("Part 1: ${directContent.size} bags can contain $quantity $bagColor bags")
 }
 
 fun part2(bagColor: String) {
 
     Bag.bagRules.filter { it.bagColor == bagColor }.firstOrNull()?.let { bag ->
-        println("part 2: " + bag.numberOfIncludedBags)
+        println("Part 2: one $bagColor bag contains ${bag.numberOfIncludedBags} bags")
     }
 }
 
 fun main() {
-    parseRules()
-//    println(rules)
     part1(1, "shiny gold")
-
     part2("shiny gold")
 }
