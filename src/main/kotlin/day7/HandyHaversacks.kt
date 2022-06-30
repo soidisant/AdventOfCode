@@ -28,7 +28,6 @@ class Bag(val bagColor: String) {
                         contentRegex.findAll(it).forEach {
                             val number = it.groups["number"]!!.value.toInt()
                             val color = it.groups["color"]!!.value
-
                             bag.bagContent.add(Pair(list.first { it.bagColor == color }, number))
                         }
                     }
