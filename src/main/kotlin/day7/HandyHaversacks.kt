@@ -2,42 +2,40 @@ package day7
 
 import java.io.File
 
-class Bag(val bagColor: String, val bagContentString: String) {
+class Bag(val bagColor: String) {
+    val bagContent = mutableListOf<Pair<Bag, Int>>()
 
     companion object {
         val contentRegex = "(?<number>\\d+) (?<color>.*) bags?".toRegex()
         val bagRegex = "(?<color>.*) bags contain (?<content>.*).".toRegex()
 
         val bagRules: MutableList<Bag> by lazy {
+            val temp = mutableMapOf<Bag, String>()
             mutableListOf<Bag>().also { list ->
                 val file = File(ClassLoader.getSystemResource("day7input.txt").file)
                 file.forEachLine { line ->
                     bagRegex.find(line)?.let {
                         val color = it.groups["color"]!!.value
                         val content = it.groups["content"]!!.value
-                        list.add(Bag(color, content))
+                        Bag(color).also {
+                            list.add(it)
+                            temp.put(it, content)
+                        }
                     }
                 }
-            }
-        }
-    }
+                temp.forEach { bag, content ->
+                    content.split(",").forEach {
+                        contentRegex.findAll(it).forEach {
+                            val number = it.groups["number"]!!.value.toInt()
+                            val color = it.groups["color"]!!.value
 
-    val bagContent: MutableList<Pair<Bag, Int>> by lazy {
-        initBagContent()
-    }
-
-    fun initBagContent(): MutableList<Pair<Bag, Int>> {
-        val bagContent = mutableListOf<Pair<Bag, Int>>()
-        bagContentString.split(",").forEach {
-            contentRegex.findAll(it).forEach {
-                val number = it.groups["number"]!!.value.toInt()
-                val color = it.groups["color"]!!.value
-                bagRules.filter { it.bagColor == color }.firstOrNull()?.let { bag ->
-                    bagContent.add(Pair(bag, number))
+                            bag.bagContent.add(Pair(list.first { it.bagColor == color }, number))
+                        }
+                    }
                 }
+//                println(list)
             }
         }
-        return bagContent
     }
 
     fun containsBag(): Boolean = bagContent.isNotEmpty()
@@ -86,7 +84,6 @@ fun part1(quantity: Int, bagColor: String) {
 }
 
 fun part2(bagColor: String) {
-
     Bag.bagRules.filter { it.bagColor == bagColor }.firstOrNull()?.let { bag ->
         println("Part 2: one $bagColor bag contains ${bag.numberOfIncludedBags} bags")
     }
