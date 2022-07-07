@@ -53,7 +53,10 @@ class PocketDimension4D {
         }
     }
 
-    private inline fun forEachNeighbors(x: Int, y: Int, z: Int, w: Int, action: (Coordinates) -> Unit) {
+    private inline fun forEachNeighborsOf(coordinates: Coordinates, action: (Coordinates) -> Unit) =
+        forEachNeighborsOf(coordinates.x, coordinates.y, coordinates.z, coordinates.w, action)
+
+    private inline fun forEachNeighborsOf(x: Int, y: Int, z: Int, w: Int, action: (Coordinates) -> Unit) {
         for (nx in x - 1..x + 1) {
             for (ny in y - 1..y + 1)
                 for (nz in z - 1..z + 1) {
@@ -67,7 +70,7 @@ class PocketDimension4D {
         }
     }
 
-    fun countActive(): Int {
+    private fun countActive(): Int {
         var count = 0
         grid.forEach { (_, xDimension) ->
             xDimension.forEach { (_, yDimension) ->
@@ -83,12 +86,34 @@ class PocketDimension4D {
         return count
     }
 
-    private fun cycle() {
-        // before each cycle, we need to add all neighbors cubes to active ones
+    private fun hasActiveNeighbors(coordinates: Coordinates): Boolean {
+        forEachNeighborsOf(coordinates) {
+            if (get(it) == true) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun addNeighbors(coordinates: Coordinates) {
+        val newCubes = mutableSetOf<Coordinates>()
+
+        forEachNeighborsOf(coordinates.x, coordinates.y, coordinates.z, coordinates.w) { neighbor ->
+            if (get(neighbor) == null) {
+                newCubes.add(neighbor)
+            }
+        }
+        newCubes.forEach {
+            put(it, false)
+        }
+    }
+
+    private fun initNeighbors() {
+        // before 1st cycle, we need to add all neighbors cubes to active ones
         val newCubes = mutableSetOf<Coordinates>()
         forEachCube { x, y, z, w, active ->
             if (active) {
-                forEachNeighbors(x, y, z, w) { coordinates ->
+                forEachNeighborsOf(x, y, z, w) { coordinates ->
                     if (get(coordinates) == null) {
                         newCubes.add(coordinates)
                     }
@@ -98,43 +123,48 @@ class PocketDimension4D {
         newCubes.forEach {
             put(it, false)
         }
+    }
+
+    private fun cycle() {
+
         // cubes that will change state
         val changes = mutableSetOf<Coordinates>()
-        // cubes with no active neighbors
+        // inactive cubes with potentially no active neighbors
         val removes = mutableSetOf<Coordinates>()
         forEachCube { x, y, z, w, active ->
             var activeNeighbors = 0
-            forEachNeighbors(x, y, z, w) { coord ->
-                val neighbor = get(coord)
+            forEachNeighborsOf(x, y, z, w) { coordinates ->
+                val neighbor = get(coordinates)
                 if (neighbor != null && neighbor) {
                     activeNeighbors++
+                    removes.remove(coordinates)
                 }
             }
-            if (active && (activeNeighbors != 2 && activeNeighbors != 3)) {
+            if ((active && (activeNeighbors != 2 && activeNeighbors != 3)) || (!active && activeNeighbors == 3)) {
                 changes.add(Coordinates(x, y, z, w))
-            } else if (!active && activeNeighbors == 3) {
-                changes.add(Coordinates(x, y, z, w))
-            }
-            if (!active && activeNeighbors == 0) {
+            } else if (!active && activeNeighbors == 0) {
                 removes.add(Coordinates(x, y, z, w))
             }
         }
         changes.forEach {
-            val state = get(it) ?: true
-            put(it, !state)
+            val state = !(get(it) ?: true)
+            put(it, state)
+            // a cube becomes active, making sur its neighbors are in the grid
+            if (state) {
+                addNeighbors(it)
+            }
         }
 
         removes.forEach {
-            if (!get(it)!!)
+            if (!hasActiveNeighbors(it) && !get(it)!!)
                 grid[it.x]?.get(it.y)?.get(it.z)?.remove(it.w)
         }
     }
 
     fun cycles(cycles: Int) {
-
+        initNeighbors()
         println("there is ${countActive()} active cubes")
         for (i in 1..cycles) {
-
             cycle()
             println("there is ${countActive()} active cubes after $i cycles")
         }
