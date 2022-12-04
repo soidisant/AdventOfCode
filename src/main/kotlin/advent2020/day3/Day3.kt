@@ -1,4 +1,4 @@
-package day3
+package advent2020.day3
 
 import java.io.File
 
@@ -42,7 +42,7 @@ class Tobogan() {
 }
 
 fun main() {
-    val file = File(Thread.currentThread().contextClassLoader.getResource("day3input.txt")!!.path)
+    val file = File(Thread.currentThread().contextClassLoader.getResource("2020/day3input.txt")!!.path)
 
     val tobogan = Tobogan(file)
     tobogan.printMap()

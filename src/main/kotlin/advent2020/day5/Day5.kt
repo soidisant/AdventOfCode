@@ -1,4 +1,4 @@
-package day5
+package advent2020.day5
 
 import java.io.File
 
@@ -22,7 +22,7 @@ fun translate(partition: String): Pair<Int, Int> {
 
 fun part1() {
     var maxSeatID = 0
-    val file = File(Thread.currentThread().contextClassLoader.getResource("day5input.txt")!!.path)
+    val file = File(Thread.currentThread().contextClassLoader.getResource("2020/day5input.txt")!!.path)
     file.forEachLine {
         val seatID = translate(it).let {
             it.first * 8 + it.second
@@ -36,7 +36,7 @@ fun part1() {
 fun Pair<Int, Int>.seatID() = first * 8 + second
 
 fun main() {
-    val file = File(Thread.currentThread().contextClassLoader.getResource("day5input.txt")!!.path)
+    val file = File(Thread.currentThread().contextClassLoader.getResource("2020/day5input.txt")!!.path)
     var seatIDS = mutableListOf<Int>()
     file.forEachLine {
         seatIDS.add(translate(it).seatID())

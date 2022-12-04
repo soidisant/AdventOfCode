@@ -1,4 +1,4 @@
-package day8
+package advent2020.day8
 
 import java.io.File
 
@@ -59,7 +59,7 @@ class HandheldHalting {
 
     val instructionStack: List<Instruction> by lazy {
         mutableListOf<Instruction>().also { stack ->
-            File(ClassLoader.getSystemResource("day8input.txt").file).let { file ->
+            File(ClassLoader.getSystemResource("2020/day8input.txt").file).let { file ->
                 file.forEachLine { line ->
                     instructionRegex.find(line)?.let {
                         stack.add(

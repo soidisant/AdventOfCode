@@ -1,4 +1,4 @@
-package day7
+package advent2020.day7
 
 import java.io.File
 
@@ -12,7 +12,7 @@ class Bag(val bagColor: String) {
         val bagRules: MutableList<Bag> by lazy {
             val temp = mutableMapOf<Bag, String>()
             mutableListOf<Bag>().also { list ->
-                val file = File(ClassLoader.getSystemResource("day7input.txt").file)
+                val file = File(ClassLoader.getSystemResource("2020/day7input.txt").file)
                 file.forEachLine { line ->
                     bagRegex.find(line)?.let {
                         val color = it.groups["color"]!!.value

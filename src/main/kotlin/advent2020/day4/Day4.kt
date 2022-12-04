@@ -1,4 +1,4 @@
-package day4
+package advent2020.day4
 
 import java.io.File
 
@@ -26,7 +26,7 @@ data class PassPort(
 
 
 fun main() {
-    val file = File(Thread.currentThread().contextClassLoader.getResource("day4input.txt")!!.path)
+    val file = File(Thread.currentThread().contextClassLoader.getResource("2020/day4input.txt")!!.path)
     var reg = "(?<field>[a-z]+):(?<value>[\\w#]+)".toRegex()
     val fields = mutableListOf<String>()
     var valid = 0

@@ -1,10 +1,10 @@
-package day17
+package advent2020.day17
 
 import java.io.File
 
 val pocketDimension: MutableSet<ConwayCubes> by lazy {
     mutableSetOf<ConwayCubes>().also { set ->
-        File(ClassLoader.getSystemResource("day17input.txt").file).let { file ->
+        File(ClassLoader.getSystemResource("2020/day17input.txt").file).let { file ->
             var y = 0
             file.forEachLine { line ->
                 var x = 0

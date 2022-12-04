@@ -1,10 +1,10 @@
-package day6
+package advent2020.day6
 
 import java.io.File
 
 fun part1() {
 
-    val file = File(ClassLoader.getSystemResource("day6input.txt").file)
+    val file = File(ClassLoader.getSystemResource("2020/day6input.txt").file)
     var count = 0
     val groupanswer = mutableSetOf<Char>()
     file.forEachLine { line ->
@@ -23,7 +23,7 @@ fun part1() {
 
 fun part2() {
 
-    val file = File(ClassLoader.getSystemResource("day6input.txt").file)
+    val file = File(ClassLoader.getSystemResource("2020/day6input.txt").file)
     var count = 0
     val groupanswer = mutableListOf<Set<Char>>()
     file.forEachLine { line ->

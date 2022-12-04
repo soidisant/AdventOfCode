@@ -1,4 +1,4 @@
-package day17
+package advent2020.day17
 
 import java.io.File
 import kotlin.time.ExperimentalTime
@@ -11,7 +11,7 @@ class PocketDimension4D {
     private val grid = mutableMapOf<Int, MutableMap<Int, MutableMap<Int, MutableMap<Int, Boolean>>>>()
 
     init {
-        File(ClassLoader.getSystemResource("day17input.txt").file).let { file ->
+        File(ClassLoader.getSystemResource("2020/day17input.txt").file).let { file ->
             var y = 0
             file.forEachLine { line ->
                 var x = 0
@@ -126,7 +126,6 @@ class PocketDimension4D {
     }
 
     private fun cycle() {
-
         // cubes that will change state
         val changes = mutableSetOf<Coordinates>()
         // inactive cubes with potentially no active neighbors
@@ -156,8 +155,9 @@ class PocketDimension4D {
         }
 
         removes.forEach {
-            if (!hasActiveNeighbors(it) && !get(it)!!)
+            if (!hasActiveNeighbors(it) && !get(it)!!) {
                 grid[it.x]?.get(it.y)?.get(it.z)?.remove(it.w)
+            }
         }
     }
 

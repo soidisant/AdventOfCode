@@ -1,4 +1,4 @@
-package day2
+package advent2020.day2
 
 import java.io.File
 
@@ -36,7 +36,7 @@ fun validatePartTwo(line: String): Boolean {
 
 fun main() {
 
-    var file = File(Thread.currentThread().contextClassLoader.getResource("day2input.txt").path)
+    var file = File(Thread.currentThread().contextClassLoader.getResource("2020/day2input.txt").path)
     var count = 0
     var countPart2 = 0
     file.forEachLine {
