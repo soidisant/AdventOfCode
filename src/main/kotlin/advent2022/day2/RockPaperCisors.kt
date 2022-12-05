@@ -1,6 +1,6 @@
 package advent2022.day2
 
-import java.io.File
+import comon.puzzleInputFile
 
 enum class Weapon(val score: Int) {
     ROCK(1),
@@ -56,11 +56,9 @@ fun Weapon.shouldPlay(outcome: String) = when (outcome) {
 fun part1() {
     val reg = "\\s".toRegex()
     var score = 0
-    File(ClassLoader.getSystemResource("2022/day2.txt").file).let { file ->
-        file.forEachLine { line ->
-            line.takeIf { it.isNotEmpty() }?.split(reg)?.let { (opponent, me) ->
-                score += parse(me) + parse(opponent)
-            }
+    puzzleInputFile(2022, "day2.txt").forEachLine { line ->
+        line.takeIf { it.isNotEmpty() }?.split(reg)?.let { (opponent, me) ->
+            score += parse(me) + parse(opponent)
         }
     }
     println("part 1 total score is $score")
@@ -69,12 +67,10 @@ fun part1() {
 fun part2() {
     val reg = "\\s".toRegex()
     var score = 0
-    File(ClassLoader.getSystemResource("2022/day2.txt").file).let { file ->
-        file.forEachLine { line ->
-            line.takeIf { it.isNotEmpty() }?.split(reg)?.let { (opponent, outcome) ->
-                val opponentWeapon = parsePart2(opponent)
-                score += opponentWeapon.shouldPlay(outcome) + opponentWeapon
-            }
+    puzzleInputFile(2022, "day2.txt").forEachLine { line ->
+        line.takeIf { it.isNotEmpty() }?.split(reg)?.let { (opponent, outcome) ->
+            val opponentWeapon = parsePart2(opponent)
+            score += opponentWeapon.shouldPlay(outcome) + opponentWeapon
         }
     }
     println("part 2 total score is $score")

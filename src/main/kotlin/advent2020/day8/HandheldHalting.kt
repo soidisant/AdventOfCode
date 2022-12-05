@@ -128,7 +128,7 @@ class HandheldHalting {
 fun main() {
     val handheldHalting = HandheldHalting()
 
-    // part1
+    // compareAssignements
     println("part 1 : ")
     handheldHalting.simulate()
     println("part 2 : ")

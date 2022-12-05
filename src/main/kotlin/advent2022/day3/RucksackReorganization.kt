@@ -1,9 +1,7 @@
 package advent2022.day3
 
-import java.io.BufferedReader
-import java.io.File
-import java.io.FileInputStream
-import java.io.InputStreamReader
+import comon.puzzleInputBufferedReader
+import comon.puzzleInputFile
 
 val Char.priority
     get() = if (isUpperCase()) {
@@ -14,19 +12,16 @@ val Char.priority
 
 fun part1() {
     var sum = 0
-    File(ClassLoader.getSystemResource("2022/day3.txt").file).let { file ->
-        file.forEachLine { line ->
-            val firstCompartment = line.substring(0, line.length / 2).toSet()
-            val secondCompartment = line.substring(line.length / 2).toSet()
-            sum += firstCompartment.intersect(secondCompartment).firstOrNull()?.priority ?: 0
-        }
+    puzzleInputFile(2022, "day3.txt").forEachLine { line ->
+        val firstCompartment = line.substring(0, line.length / 2).toSet()
+        val secondCompartment = line.substring(line.length / 2).toSet()
+        sum += firstCompartment.intersect(secondCompartment).firstOrNull()?.priority ?: 0
     }
     println("sum = $sum")
 }
 
 fun part2() {
-    val file = File(ClassLoader.getSystemResource("2022/day3.txt").file)
-    val bufferedReader = BufferedReader(InputStreamReader(FileInputStream(file)))
+    val bufferedReader = puzzleInputBufferedReader(2022, "day3.txt")
     var sum = bufferedReader.lineSequence().chunked(3) { it.map(String::toSet) }.fold(0) { acc, rucksacks ->
         acc + (rucksacks.reduce(Iterable<Char>::intersect).firstOrNull()?.priority ?: 0)
     }

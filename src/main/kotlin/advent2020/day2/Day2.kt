@@ -47,6 +47,6 @@ fun main() {
             countPart2++
         }
     }
-    println("part1 $count")
+    println("compareAssignements $count")
     println("part2 $countPart2")
 }

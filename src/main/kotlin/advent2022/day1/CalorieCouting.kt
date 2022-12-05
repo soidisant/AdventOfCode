@@ -1,22 +1,21 @@
 package advent2022.day1
 
-import java.io.File
+import comon.puzzleInputFile
 
 data class Elf(var calories: Int)
 
 fun calorieCounting(): List<Elf> {
     var currentElf = Elf(0)
     val elves = mutableListOf(currentElf)
-    File(ClassLoader.getSystemResource("2022/day1.txt").file).let { file ->
-        file.forEachLine { line ->
-            if (line.isBlank()) {
-                currentElf = Elf(0)
-                elves.add(currentElf)
-            } else {
-                currentElf.calories += line.toInt()
-            }
+    puzzleInputFile(2022, "day1.txt").forEachLine { line ->
+        if (line.isBlank()) {
+            currentElf = Elf(0)
+            elves.add(currentElf)
+        } else {
+            currentElf.calories += line.toInt()
         }
     }
+
     return elves
 }
 
