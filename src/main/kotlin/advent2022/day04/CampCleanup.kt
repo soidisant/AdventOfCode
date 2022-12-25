@@ -1,4 +1,4 @@
-package advent2022.day4
+package advent2022.day04
 
 import comon.puzzleInputBufferedReader
 

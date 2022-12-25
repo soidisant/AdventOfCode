@@ -1,4 +1,4 @@
-package advent2022.day7
+package advent2022.day07
 
 import comon.puzzleInputBufferedReader
 import kotlin.math.absoluteValue

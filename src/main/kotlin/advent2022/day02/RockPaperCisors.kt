@@ -1,4 +1,4 @@
-package advent2022.day2
+package advent2022.day02
 
 import comon.puzzleInputFile
 

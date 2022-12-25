@@ -1,4 +1,4 @@
-package advent2022.day6
+package advent2022.day06
 
 import comon.puzzleInputBufferedReader
 import java.io.BufferedReader
