@@ -1,37 +1,23 @@
 package advent2022.day14
 
+import comon.GridByColumns
+import comon.Point
 import comon.puzzleInputBufferedReader
 
-data class Coord(val x: Int, val y: Int)
-
-class RegolithReservoir(val sandSource: Coord, val bottomLess: Boolean) {
+class RegolithReservoir(val sandSource: Point, val bottomLess: Boolean) {
     enum class Element { Rock, Sand, Air }
 
-    private val grid = mutableMapOf<Int, MutableMap<Int, Element>>()
+    private val grid = GridByColumns<Element>()
     private val deepest: Int
-    private val minX: Int
-        get() = grid.keys.minOf { it }
-    private val maxX: Int
-        get() = grid.keys.maxOf { it }
 
     fun get(x: Int, y: Int) =
         if (bottomLess || y < (deepest + 2))
-            grid[x]?.get(y) ?: Element.Air
+            grid[x, y] ?: Element.Air
         else
             Element.Rock
 
-    fun put(coord: Coord, element: Element) {
-        put(coord.x, coord.y, element)
-    }
-
-    fun put(x: Int, y: Int, element: Element) {
-        grid.getOrPut(x) {
-            mutableMapOf()
-        }[y] = element
-    }
-
-    fun drawLine(start: Coord, end: Coord) {
-        put(start, Element.Rock)
+    fun drawLine(start: Point, end: Point) {
+        grid.put(start, Element.Rock)
         val xProgression =
             if (start.x <= end.x)
                 start.x..end.x
@@ -44,48 +30,48 @@ class RegolithReservoir(val sandSource: Coord, val bottomLess: Boolean) {
                 start.y.downTo(end.y)
         for (x in xProgression)
             for (y in yProgression)
-                put(x, y, Element.Rock)
+                grid.put(x, y, Element.Rock)
     }
 
     init {
         val reg = "(?>(\\d+),(\\d+))".toRegex()
         puzzleInputBufferedReader(2022, "day14.txt").forEachLine { line ->
-            reg.findAll(line).map { it.groupValues.let { (_, x, y) -> Coord(x.toInt(), y.toInt()) } }
+            reg.findAll(line).map { it.groupValues.let { (_, x, y) -> Point(x.toInt(), y.toInt()) } }
                 .windowed(2).forEach { (start, end) ->
                     drawLine(start, end)
                 }
         }
-        deepest = grid.values.map { it.keys }.maxOf { it.maxOf { it } }
+        deepest = grid.maxY
     }
 
     fun print() {
-        print(Coord(minX, 0), Coord(maxX, deepest))
-    }
-
-    fun print(topLeft: Coord, bottomRight: Coord) {
-        for (y in topLeft.y..bottomRight.y) {
-            for (x in topLeft.x..bottomRight.x) {
-                when (get(x, y)) {
-                    Element.Rock -> print("#")
-                    Element.Sand -> print("o")
-                    Element.Air -> print(".")
-                }
+        grid.println(Point(grid.minX, 0), Point(grid.maxX, grid.maxY)) { element ->
+            when (element) {
+                Element.Rock -> "#"
+                Element.Sand -> "o"
+                Element.Air -> "."
+                null -> "."
             }
-            println("")
         }
     }
 
+
     fun dropSand(x: Int, y: Int): Boolean {
         if (!bottomLess || y <= deepest) {
-            return if (get(x, y + 1) == Element.Air) {
-                dropSand(x, y + 1)
-            } else if (get(x - 1, y + 1) == Element.Air) {
-                dropSand(x - 1, y + 1)
-            } else if (get(x + 1, y + 1) == Element.Air) {
-                dropSand(x + 1, y + 1)
-            } else {
-                put(x, y, Element.Sand)
-                true
+            return when (Element.Air) {
+                get(x, y + 1) -> {
+                    dropSand(x, y + 1)
+                }
+                get(x - 1, y + 1) -> {
+                    dropSand(x - 1, y + 1)
+                }
+                get(x + 1, y + 1) -> {
+                    dropSand(x + 1, y + 1)
+                }
+                else -> {
+                    grid.put(x, y, Element.Sand)
+                    true
+                }
             }
         }
         return false
@@ -110,13 +96,13 @@ class RegolithReservoir(val sandSource: Coord, val bottomLess: Boolean) {
 }
 
 fun part1() {
-    val regolithReservoir = RegolithReservoir(Coord(500, 0), true)
+    val regolithReservoir = RegolithReservoir(Point(500, 0), true)
     println("part1: ${regolithReservoir.calculateSandUnits()} units of sand come to rest before sand starts flowing into the abyss below")
-//    regolithReservoir.print()
+    regolithReservoir.print()
 }
 
 fun part2() {
-    val regolithReservoir = RegolithReservoir(Coord(500, 0), false)
+    val regolithReservoir = RegolithReservoir(Point(500, 0), false)
     println("part2: ${regolithReservoir.fillWithSand()} units of sand come to rest")
 }
 
