@@ -13,14 +13,14 @@ class BeaconExclusionZone {
     enum class Element { Beacon, Sensor, Empty }
 
     val grid = GridByRows<Element>()
-    val sensors = mutableListOf<Pair<Point, Int>>()
+    val sensors = mutableListOf<Pair<Point.Fixed, Int>>()
 
     init {
         val reg = "Sensor at x=(-?\\d+), y=(-?\\d+): closest beacon is at x=(-?\\d+), y=(-?\\d+)".toRegex()
         puzzleInputBufferedReader(2022, "day15.txt").forEachLine { line ->
             reg.find(line)?.groupValues?.let { (_, sensorX, sensorY, beaconX, beaconY) ->
-                val sensor = Point(sensorX.toInt(), sensorY.toInt())
-                val beacon = Point(beaconX.toInt(), beaconY.toInt())
+                val sensor = Point.Fixed(sensorX.toInt(), sensorY.toInt())
+                val beacon = Point.Fixed(beaconX.toInt(), beaconY.toInt())
                 grid.put(sensor, Element.Sensor)
                 grid.put(beacon, Element.Beacon)
                 sensors.add(sensor to sensor.taxicabDistance(beacon))
@@ -28,7 +28,7 @@ class BeaconExclusionZone {
         }
     }
 
-    fun setNoBeaconAtRow(row: Int, sensor: Point, closestBeacon: Int) {
+    fun setNoBeaconAtRow(row: Int, sensor: Point.Fixed, closestBeacon: Int) {
         for (x in 0..closestBeacon) {
             val yProgression = (sensor.y - (closestBeacon - x))..(sensor.y + closestBeacon - x)
             if (row in yProgression) {
@@ -42,7 +42,7 @@ class BeaconExclusionZone {
         }
     }
 
-    fun Point.pointsAt(taxiCabDistance: Int): Sequence<Point> {
+    fun Point.pointsAt(taxiCabDistance: Int): Sequence<Point.Fixed> {
         var x = this.x - taxiCabDistance
         return sequence {
             generateSequence {
@@ -52,9 +52,10 @@ class BeaconExclusionZone {
                     null
                 }
             }.forEach { y ->
-                yield(Point(x, this@pointsAt.y + y))
-                if (y != 0)
-                    yield(Point(x, this@pointsAt.y - y))
+                yield(Point.Fixed(x, this@pointsAt.y + y))
+                if (y != 0) {
+                    yield(Point.Fixed(x, this@pointsAt.y - y))
+                }
                 x++
             }
         }
@@ -69,16 +70,16 @@ class BeaconExclusionZone {
         sensors.forEach { (sensor, closestBeacon) ->
             println("testing sensor $sensor closest beacon at $closestBeacon units")
             sensor.pointsAt(closestBeacon + 1).forEach { point ->
-                if (point.x in topLeftBound.x..bottomRightBound.x
-                    && point.y in topLeftBound.y..bottomRightBound.y
-                    && isDistressBeacon(point)
-                )
+                if (point.x in topLeftBound.x..bottomRightBound.x &&
+                    point.y in topLeftBound.y..bottomRightBound.y &&
+                    isDistressBeacon(point)
+                ) {
                     return point
+                }
             }
         }
         throw Exception("Distress beacon could not be found!")
     }
-
 }
 
 fun main() {
@@ -92,6 +93,6 @@ fun main() {
     }
     println("Part1: in the row where y=$row, there are $total positions where a beacon cannot be present.")
 
-    val beacon = beaconExclusionZone.findDistressBeacon(Point(0, 0), Point(4000000, 4000000))
+    val beacon = beaconExclusionZone.findDistressBeacon(Point.Fixed(0, 0), Point.Fixed(4000000, 4000000))
     println("Part2: Beacon is at $beacon, it's tuning frequency is ${beacon.tuningFrequency}")
 }

@@ -1,5 +1,6 @@
 package comon
 
+import java.util.TreeMap
 
 abstract class Grid<T> {
     abstract val minY: Int
@@ -10,14 +11,18 @@ abstract class Grid<T> {
     abstract operator fun get(x: Int, y: Int): T?
     abstract fun put(x: Int, y: Int, element: T)
 
-    val elements = mutableMapOf<Int, MutableMap<Int, T>>()
+    val elements = TreeMap<Int, TreeMap<Int, T>>()
+
+    fun clear() {
+        elements.clear()
+    }
 
     fun put(point: Point, element: T) {
         put(point.x, point.y, element)
     }
 
     fun println(delegate: (T?) -> String) {
-        println(Point(minX, minY), Point(maxX, maxY), delegate)
+        println(Point.Fixed(minX, minY), Point.Fixed(maxX, maxY), delegate)
     }
 
     fun println(topLeft: Point, bottomRight: Point, delegate: (T?) -> String) {
@@ -32,13 +37,13 @@ abstract class Grid<T> {
 
 class GridByRows<T> : Grid<T>() {
     override val minY: Int
-        get() = elements.keys.minOf { it }
+        get() = elements.keys.minOfOrNull { it } ?: 0
     override val maxY: Int
-        get() = elements.keys.maxOf { it }
+        get() = elements.keys.maxOfOrNull { it } ?: 0
     override val minX: Int
-        get() = elements.values.minOf { it.keys.minOf { it } }
+        get() = elements.values.minOfOrNull { it.keys.minOf { it } } ?: 0
     override val maxX: Int
-        get() = elements.values.maxOf { it.keys.maxOf { it } }
+        get() = elements.values.maxOfOrNull { it.keys.maxOf { it } } ?: 0
 
     fun row(y: Int) = elements[y]
 
@@ -46,7 +51,7 @@ class GridByRows<T> : Grid<T>() {
 
     override fun put(x: Int, y: Int, element: T) {
         elements.getOrPut(y) {
-            mutableMapOf()
+            TreeMap()
         }[x] = element
     }
 }
@@ -68,7 +73,7 @@ class GridByColumns<T> : Grid<T>() {
 
     override fun put(x: Int, y: Int, element: T) {
         elements.getOrPut(x) {
-            mutableMapOf()
+            TreeMap()
         }[y] = element
     }
 }

@@ -1,3 +1,9 @@
 package comon
 
-data class Point(val x: Int, val y: Int)
+sealed class Point {
+    abstract val x: Int
+    abstract val y: Int
+
+    data class Fixed(override val x: Int, override val y: Int) : Point()
+    data class Mutable(override var x: Int, override var y: Int) : Point()
+}
