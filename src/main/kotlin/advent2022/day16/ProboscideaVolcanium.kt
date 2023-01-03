@@ -10,7 +10,7 @@ class ProboscideaVolcanium {
         val lineRegex =
             "Valve ([A-Z]{2}) has flow rate=(\\d+); tunnels? leads? to valves? ((?>[A-Z]{2},? ?)+)".toRegex()
         puzzleInputBufferedReader(2022, "day16.txt").forEachLine { line ->
-            lineRegex.find(line)?.groupValues?.let { (_, valveName, flowRate, tunnels) ->
+            lineRegex.find(line)?.destructured?.let { (valveName, flowRate, tunnels) ->
                 val valve = valves.getOrPut(valveName) {
                     Valve(valveName, flowRate.toInt(), tunnels.split(",").map(String::trim))
                 }

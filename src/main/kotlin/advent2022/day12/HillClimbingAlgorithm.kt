@@ -63,7 +63,7 @@ class HillClimbingAlgorithm {
         }
 
     init {
-        puzzleInputBufferedReader(2022, "day12.txt").readLines().forEachIndexed() { y, line ->
+        puzzleInputBufferedReader(2022, "day12.txt").readLines().forEachIndexed { y, line ->
             grid.add(mutableListOf())
             line.forEachIndexed { x, elevation ->
                 when (elevation) {
@@ -94,15 +94,16 @@ class HillClimbingAlgorithm {
         val path = pathToDestination()
         grid.forEachIndexed { y, line ->
             line.forEachIndexed { x, point ->
-                if (x == destination.x && y == destination.y)
+                if (x == destination.x && y == destination.y) {
                     print(" E ")
-                else if (x == start.x && y == start.y)
+                } else if (x == start.x && y == start.y) {
                     print(" S" + point.distance!!.towards.print)
-                else {
+                } else {
                     if (path.contains(Coordinates(x, y))) {
-                        print(" " + (point.distance?.let { it.towards.print } ?: ".") + " ")
-                    } else
+                        print(" " + (point.distance?.towards?.print ?: ".") + " ")
+                    } else {
                         print(" . ")
+                    }
                 }
             }
             println()
@@ -111,7 +112,7 @@ class HillClimbingAlgorithm {
 
     fun pathToDestination(): MutableList<Coordinates> {
         val path = mutableListOf<Coordinates>()
-        var coord = start.copy()
+        val coord = start.copy()
         do {
             path.add(coord.copy())
             coord.move(grid[coord.y][coord.x].distance!!.towards)
@@ -124,12 +125,14 @@ class HillClimbingAlgorithm {
         while (coords.isNotEmpty()) {
             val nextCoords = mutableListOf<Coordinates>()
             coords.forEach { point ->
-                point.neighbors.forEach { direction, neighbor ->
+                point.neighbors.forEach { (direction, neighbor) ->
                     val toElevation = grid[point.y][point.x].elevation
                     val fromElevation = grid[neighbor.y][neighbor.x].elevation
-                    if ((fromElevation >= toElevation ||
-                                (toElevation - fromElevation) < 2)
-                        && neighbor.isPossibleShortestPathTo(point, direction.reverse)
+                    if ((
+                        fromElevation >= toElevation ||
+                            (toElevation - fromElevation) < 2
+                        ) &&
+                        neighbor.isPossibleShortestPathTo(point, direction.reverse)
                     ) {
                         nextCoords.add(neighbor)
                     }

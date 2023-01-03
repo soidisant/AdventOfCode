@@ -39,7 +39,7 @@ class RegolithReservoir(val sandSource: Point.Fixed, val bottomLess: Boolean) {
     init {
         val reg = "(?>(\\d+),(\\d+))".toRegex()
         puzzleInputBufferedReader(2022, "day14.txt").forEachLine { line ->
-            reg.findAll(line).map { it.groupValues.let { (_, x, y) -> Point.Fixed(x.toInt(), y.toInt()) } }
+            reg.findAll(line).map { it.destructured.let { (x, y) -> Point.Fixed(x.toInt(), y.toInt()) } }
                 .windowed(2).forEach { (start, end) ->
                     drawLine(start, end)
                 }

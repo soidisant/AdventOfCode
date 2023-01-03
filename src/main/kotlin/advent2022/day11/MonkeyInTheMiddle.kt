@@ -26,14 +26,13 @@ data class TestOperation<T : Number>(
 )
 
 inline fun <T> List<T>.nIndexOfFirst(n: Int, predicate: (T) -> Boolean): Int? {
-    var index = 0
     var found = 0
-    for (item in this) {
+    for ((index, item) in this.withIndex()) {
         if (predicate(item)) {
-            if (++found == n)
+            if (++found == n) {
                 return index
+            }
         }
-        index++
     }
     return null
 }
@@ -80,8 +79,9 @@ class MonkeyInTheMiddle(val worryLevelFactor: Long?) {
         manageWorryLevel = { worryLevel ->
             if (worryLevelFactor == null) {
                 worryLevel % customWorryLevelReduceFact
-            } else
+            } else {
                 worryLevel / worryLevelFactor
+            }
         }
     }
 
@@ -100,8 +100,7 @@ class MonkeyInTheMiddle(val worryLevelFactor: Long?) {
         println(monkeys.map { it.inspected })
         val shenanigans = monkeys.sortedByDescending { it.inspected }
             .let { (m1, m2) -> m1.inspected * m2.inspected }
-        println("The level of monkey business after ${numberOfRounds} rounds of stuff-slinging simian shenanigans is $shenanigans")
-
+        println("The level of monkey business after $numberOfRounds rounds of stuff-slinging simian shenanigans is $shenanigans")
     }
 }
 

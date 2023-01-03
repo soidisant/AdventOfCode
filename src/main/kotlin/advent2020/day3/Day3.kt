@@ -35,7 +35,7 @@ class Tobogan() {
         var position = Pair(0, 0)
         while (position.second < height() - 1) {
             position = Pair(position.first + slideX, position.second + slideY)
-            map.put(position, get(position.first, position.second))
+            map[position] = get(position.first, position.second)
         }
         return map.filterValues { it }.count().toLong()
     }

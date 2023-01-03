@@ -118,10 +118,10 @@ class HandheldHalting {
                     ?: throw Exception("unable to fix program :(") // no more instruction can be switched (we cannot fix the program)
             }
         }
-        if (flipIndex != -1)
-            return "fix was applied @line ${flipIndex + 1} \n-${instructionStack[flipIndex].cmd.fix()} ${instructionStack[flipIndex].argument}  \n+${instructionStack[flipIndex].cmd} ${instructionStack[flipIndex].argument}"
+        return if (flipIndex != -1)
+            "fix was applied @line ${flipIndex + 1} \n-${instructionStack[flipIndex].cmd.fix()} ${instructionStack[flipIndex].argument}  \n+${instructionStack[flipIndex].cmd} ${instructionStack[flipIndex].argument}"
         else
-            return "programs runs fine no need fixing"
+            "programs runs fine no need fixing"
     }
 }
 

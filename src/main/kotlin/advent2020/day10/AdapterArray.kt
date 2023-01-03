@@ -26,7 +26,6 @@ fun part2() {
     }
     adapters.sort()
     adapters.add(adapters.last() + 3)
-
 }
 
 fun main() {

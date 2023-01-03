@@ -24,12 +24,12 @@ class PyroclasticFlow(
         grid.clear()
         // draw the floor
         for (x in leftBound..rightBound)
-            grid.put(x, 0, true)
+            grid[x, 0] = true
     }
 
     private fun Grid<Boolean>.putRock(rocks: Rocks) {
         rocks.points.forEach { point ->
-            put(point.x, point.y, true)
+            this[point.x, point.y] = true
         }
     }
 

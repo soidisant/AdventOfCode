@@ -2,7 +2,6 @@ package advent2022.day13
 
 import comon.puzzleInputBufferedReader
 
-
 sealed class Packet : Comparable<Packet> {
     data class Item(val data: Int) : Packet() {
         override fun compareTo(other: Packet): Int = when (other) {
@@ -13,7 +12,6 @@ sealed class Packet : Comparable<Packet> {
         override fun toString(): String {
             return data.toString()
         }
-
     }
 
     data class List(val data: MutableList<Packet> = mutableListOf()) : Packet() {
@@ -41,7 +39,6 @@ sealed class Packet : Comparable<Packet> {
             return data.toString().replace("\\s".toRegex(), "")
         }
     }
-
 }
 
 class DistressSignal {
@@ -63,8 +60,9 @@ fun parsePacket(packet: String): Packet.List {
         if (it.isEmpty()) {
             val newList = Packet.List()
             lists.add(newList)
-            if (currentList != -1)
+            if (currentList != -1) {
                 lists[currentList].data.add(newList)
+            }
             currentList++
         } else {
             "^(\\d*)(]*)$".toRegex().find(it)?.groupValues?.let { (_, item, rightBrackets) ->
@@ -82,13 +80,13 @@ fun parsePacket(packet: String): Packet.List {
     return lists.first()
 }
 
-
 fun main() {
     val distressSignal = DistressSignal()
     var sumOfIndices = 0
     distressSignal.packets.windowed(2, 2).forEachIndexed { index, (p1, p2) ->
-        if (p1 < p2)
+        if (p1 < p2) {
             sumOfIndices += (index + 1)
+        }
     }
     println("Part1: the sum of indices is $sumOfIndices")
 

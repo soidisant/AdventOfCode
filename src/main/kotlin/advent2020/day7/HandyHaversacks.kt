@@ -19,11 +19,11 @@ class Bag(val bagColor: String) {
                         val content = it.groups["content"]!!.value
                         Bag(color).also {
                             list.add(it)
-                            temp.put(it, content)
+                            temp[it] = content
                         }
                     }
                 }
-                temp.forEach { bag, content ->
+                temp.forEach { (bag, content) ->
                     content.split(",").forEach {
                         contentRegex.findAll(it).forEach {
                             val number = it.groups["number"]!!.value.toInt()
@@ -46,11 +46,11 @@ class Bag(val bagColor: String) {
     val numberOfIncludedBags: Int by lazy {
         var total = 0
         bagContent.forEach { bagPair ->
-            if (bagPair.first.containsBag()) {
+            total += if (bagPair.first.containsBag()) {
                 val subtotal = bagPair.first.numberOfIncludedBags
-                total += bagPair.second + bagPair.second * subtotal
+                bagPair.second + bagPair.second * subtotal
             } else {
-                total += bagPair.second
+                bagPair.second
             }
         }
         total
@@ -83,7 +83,7 @@ fun part1(quantity: Int, bagColor: String) {
 }
 
 fun part2(bagColor: String) {
-    Bag.bagRules.filter { it.bagColor == bagColor }.firstOrNull()?.let { bag ->
+    Bag.bagRules.firstOrNull { it.bagColor == bagColor }?.let { bag ->
         println("Part 2: one $bagColor bag contains ${bag.numberOfIncludedBags} bags")
     }
 }

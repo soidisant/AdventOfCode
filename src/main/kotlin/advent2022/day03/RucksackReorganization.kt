@@ -22,7 +22,7 @@ fun part1() {
 
 fun part2() {
     val bufferedReader = puzzleInputBufferedReader(2022, "day3.txt")
-    var sum = bufferedReader.lineSequence().chunked(3) { it.map(String::toSet) }.fold(0) { acc, rucksacks ->
+    val sum = bufferedReader.lineSequence().chunked(3) { it.map(String::toSet) }.fold(0) { acc, rucksacks ->
         acc + (rucksacks.reduce(Iterable<Char>::intersect).firstOrNull()?.priority ?: 0)
     }
     bufferedReader.close()

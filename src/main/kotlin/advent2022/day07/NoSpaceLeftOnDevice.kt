@@ -95,11 +95,11 @@ enum class ParseStatus {
 
 fun FileSystem.parseFile() {
     var command: Pair<FileSystem.Companion.Commands, String>? = null
-    var commandOutput = mutableListOf<String>()
+    val commandOutput = mutableListOf<String>()
     puzzleInputBufferedReader(2022, "day7.txt").use { reader ->
         reader.forEachLine { line ->
             if (line.isNotBlank()) {
-                var status = if (line.startsWith("$")) ParseStatus.COMMAND else ParseStatus.OUTPUT
+                val status = if (line.startsWith("$")) ParseStatus.COMMAND else ParseStatus.OUTPUT
                 when (status) {
                     ParseStatus.COMMAND -> {
                         if (command != null) {
@@ -134,7 +134,7 @@ fun main() {
 
     val neededSpace = (70000000 - 30000000 - fileSystem.root.size).absoluteValue
     val sizeOfDirectoryToDelete =
-        fileSystem.directories.map { it.size }.filter { it >= neededSpace }.sorted().first()
+        fileSystem.directories.map { it.size }.filter { it >= neededSpace }.minOf { it }
     println("part2 : $sizeOfDirectoryToDelete")
 }
 

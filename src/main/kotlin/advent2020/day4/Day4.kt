@@ -27,7 +27,7 @@ data class PassPort(
 
 fun main() {
     val file = File(Thread.currentThread().contextClassLoader.getResource("2020/day4input.txt")!!.path)
-    var reg = "(?<field>[a-z]+):(?<value>[\\w#]+)".toRegex()
+    val reg = "(?<field>[a-z]+):(?<value>[\\w#]+)".toRegex()
     val fields = mutableListOf<String>()
     var valid = 0
     var lineNb = 0
@@ -43,8 +43,8 @@ fun main() {
             fields.clear()
         } else {
             reg.findAll(line).forEach { result ->
-                val field = result.groups.get("field")!!.value
-                val value = result.groups.get("value")!!.value
+                val field = result.groups["field"]!!.value
+                val value = result.groups["value"]!!.value
 
                 when (field) {
                     Fields.BIRTH_YEAR.label -> {

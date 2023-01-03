@@ -18,7 +18,7 @@ class BeaconExclusionZone {
     init {
         val reg = "Sensor at x=(-?\\d+), y=(-?\\d+): closest beacon is at x=(-?\\d+), y=(-?\\d+)".toRegex()
         puzzleInputBufferedReader(2022, "day15.txt").forEachLine { line ->
-            reg.find(line)?.groupValues?.let { (_, sensorX, sensorY, beaconX, beaconY) ->
+            reg.find(line)?.destructured?.let { (sensorX, sensorY, beaconX, beaconY) ->
                 val sensor = Point.Fixed(sensorX.toInt(), sensorY.toInt())
                 val beacon = Point.Fixed(beaconX.toInt(), beaconY.toInt())
                 grid.put(sensor, Element.Sensor)

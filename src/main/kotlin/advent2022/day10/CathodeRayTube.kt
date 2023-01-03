@@ -71,7 +71,7 @@ data class CPU(var register: Int = 1) {
         cycleNumber * cycles[cycleNumber - 1]
 
     fun computeCRT() {
-        var screen = mutableListOf<String>()
+        val screen = mutableListOf<String>()
         var cursor = 0
         var line = ""
         cycles.forEach { cycle ->

@@ -201,7 +201,6 @@ val values = """
 1741
 """.trim().split("\n").map { it.toInt() }
 
-
 fun v1() {
     for ((index, value) in values.iterator().withIndex()) {
         for (i2 in index + 1..values.lastIndex) {
@@ -209,15 +208,12 @@ fun v1() {
                 println("$value + ${values[i2]} = 2020 | ${value * values[i2]}")
                 break
             }
-
-
         }
     }
 }
 
 fun part2V1() {
     for ((index, value) in values.iterator().withIndex()) {
-
         for (i2 in index + 1..values.lastIndex) {
             for (i3 in i2 + 1..values.lastIndex) {
                 if ((value + values[i2] + values[i3]) == 2020) {
@@ -225,49 +221,40 @@ fun part2V1() {
                     return
                 }
             }
-
         }
     }
-
 }
-
 
 fun part1Better() {
     val pair = values.findPairOfSum(2020)
     println(pair)
-    //println(pair.first * pair.second)
+    // println(pair.first * pair.second)
 }
 
 fun part2Better() {
-
-    //val complementPairs: Map<Int, Pair<Int, Int>?> = values.associateWith { values.findPairOfSum(2020 - it) }
-    //println(complementPairs)
+    // val complementPairs: Map<Int, Pair<Int, Int>?> = values.associateWith { values.findPairOfSum(2020 - it) }
+    // println(complementPairs)
 
     val triple = values.firstNotNullOfOrNull { x ->
         val pair = values.findPairOfSum(2020 - x)
-        if (pair != null)
+        if (pair != null) {
             Triple(x, pair.first, pair.second)
-        else null
+        } else null
     }
 
     println(triple)
 }
 
-public fun List<Int>.findPairOfSum(sum: Int): Pair<Int, Int>? {
+fun List<Int>.findPairOfSum(sum: Int): Pair<Int, Int>? {
     val complements = associateBy { sum - it }
     return values.firstNotNullOfOrNull { number ->
-        val complement = complements.get(number)
-        if (complement != null)
+        val complement = complements[number]
+        if (complement != null) {
             Pair(number, complement)
-        else null
+        } else null
     }
-
 }
 
 fun main() {
     print(readln().toBoolean())
-
-
-
 }
-

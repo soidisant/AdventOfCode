@@ -31,7 +31,7 @@ fun overlaps(r1: IntRange, r2: IntRange) = r1.first.compareTo(r2.first).let {
 
 fun compareAssignments(transform: (IntRange, IntRange) -> Boolean): Int {
     val bufferedReader = puzzleInputBufferedReader(2022, "day4.txt")
-    var sum = bufferedReader.lineSequence().fold(0) { acc, line ->
+    val sum = bufferedReader.lineSequence().fold(0) { acc, line ->
         parse(line).let { (r1, r2) ->
             acc + (if (transform(r1, r2)) 1 else 0)
         }
